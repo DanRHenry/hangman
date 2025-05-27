@@ -1,7 +1,7 @@
 import { dictionary } from "../Dictionary/dictionary.js";
 
 // console.log("dictionary: ",dictionary)
-
+let showdef = false;
 const gameplayLetters = document.getElementById("gameplayLetters");
 const emptyLetters = document.getElementsByClassName("emptyLetters");
 const gallows = document.getElementById("gallows");
@@ -150,7 +150,7 @@ const wordList = {
     "penelope rex and the problem with pets",
     "where the wild things are",
     "the cat way",
-    ""
+    "",
   ],
   scrabbledictionary: dictionary,
   // games: [""]
@@ -163,6 +163,7 @@ for (let button of buttons) {
 }
 
 function selectRandomWord() {
+  showdef = true;
   const category = wordList[this.id];
   const randomNum = Math.floor(Math.random() * category.length);
   // console.log(randomNum)
@@ -208,7 +209,7 @@ const allowedCharacters = [
   "z",
   " ",
   "-",
-  "'"
+  "'",
 ];
 
 let usedPile = [];
@@ -232,7 +233,7 @@ function placeEmptySpaces(word) {
   }
 }
 
-function checkInputAgainstWord(word, key) {
+async function checkInputAgainstWord(word, key) {
   if (word.includes(key)) {
     for (let i = 0; i < word.length; i++) {
       if (word[i] === key) {
@@ -258,7 +259,8 @@ function checkInputAgainstWord(word, key) {
     if (playedWord === checkWord) {
       setTimeout(() => {
         alert("Congratulations! You Win!");
-        restartGame();
+        createEndGameContent()
+        // restartGame();
       }, 500);
     }
   } else {
@@ -282,12 +284,12 @@ function checkInputAgainstWord(word, key) {
           emptyLetters[i].textContent = word[i];
         }
         document.removeEventListener("keypress", checkWord);
-        setTimeout(() => {
+
+        createEndGameContent()
+
           alert("Game Over");
           setTimeout(() => {
-            restartGame();
           }, 2000);
-        }, 500);
       }
     }
   }
@@ -333,4 +335,46 @@ function checkWord(event) {
 function restartGame() {
   word = "";
   location.reload();
+}
+
+async function lookUpWordInDictionary(word) {
+  const res = await fetch(
+    `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+  );
+    const data = await res.json()
+    console.log(data.message)
+    console.log(data.status)
+// console.log("data: ",data[0].meanings[0].definitions[0].definition)
+
+let displayedword = word.charAt(0).toUpperCase() + word.slice(1);
+
+if (data.message === "Sorry pal, we couldn't find definitions for the word you were looking for.") {
+  return `${displayedword} is undefined`
+}
+  return `${displayedword}: ${data[0].meanings[0].definitions[0].definition}`
+}
+
+async function createEndGameContent () {
+              const defcont = document.createElement("div");
+            console.log(word)
+            const text = await lookUpWordInDictionary(word)
+            console.log(text)
+
+            defcont.textContent = text;
+
+            // const worddisplay = document.createElement("div")
+            // worddisplay.textContent = word
+            const hr = document.createElement('hr')
+            const restartBtn = document.createElement("button")
+            restartBtn.style.display = "block"
+            restartBtn.textContent = "Restart"
+            restartBtn.addEventListener("click", restartGame)
+
+            const br = document.createElement("br")
+
+            gallows.before(hr)
+            // gallows.before (worddisplay)
+            gallows.before(defcont);
+            defcont.after (br)
+            defcont.append(restartBtn)
 }
