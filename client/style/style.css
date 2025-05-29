@@ -29,3 +29,8 @@ body {
 #inputField {
     visibility: hidden;
 }
+
+#restartBtn:focus {
+    text-decoration: none;
+    border: none;
+}

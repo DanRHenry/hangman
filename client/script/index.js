@@ -217,6 +217,15 @@ let usedPile = [];
 // const server = `http://127.0.0.1:5500/client`;
 const server = `https://danhenrydev.com/projects/hangman/client`;
 
+const inputField = document.getElementById("inputField");
+
+inputField.value = "hello";
+
+// console.log(inputField.value)
+// document.addEventListener("readystatechange", () => {
+//   console.log(inputField.value)
+//   inputField.click()})
+
 document.addEventListener("keypress", handleSubmitStartingWord);
 
 function placeEmptySpaces(word) {
@@ -231,6 +240,10 @@ function placeEmptySpaces(word) {
       emptyLetter.style.borderBottom = "0";
     }
   }
+
+  // This should bring up the keyboard on mobile
+  inputField.click();
+  // console.log(inputField.value)
 }
 
 async function checkInputAgainstWord(word, key) {
@@ -254,13 +267,11 @@ async function checkInputAgainstWord(word, key) {
       }
     }
 
-    // console.log(checkWord);
-
     if (playedWord === checkWord) {
       setTimeout(() => {
+
+        createEndGameContent();
         alert("Congratulations! You Win!");
-        createEndGameContent()
-        // restartGame();
       }, 500);
     }
   } else {
@@ -285,11 +296,10 @@ async function checkInputAgainstWord(word, key) {
         }
         document.removeEventListener("keypress", checkWord);
 
-        createEndGameContent()
+        createEndGameContent();
 
-          alert("Game Over");
-          setTimeout(() => {
-          }, 2000);
+        alert("Game Over");
+        setTimeout(() => {}, 2000);
       }
     }
   }
@@ -341,40 +351,39 @@ async function lookUpWordInDictionary(word) {
   const res = await fetch(
     `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
   );
-    const data = await res.json()
-    console.log(data.message)
-    console.log(data.status)
-// console.log("data: ",data[0].meanings[0].definitions[0].definition)
+  const data = await res.json();
 
-let displayedword = word.charAt(0).toUpperCase() + word.slice(1);
+  let displayedword = word.charAt(0).toUpperCase() + word.slice(1);
 
-if (data.message === "Sorry pal, we couldn't find definitions for the word you were looking for.") {
-  return `${displayedword} is undefined`
+  if (
+    data.message ===
+    "Sorry pal, we couldn't find definitions for the word you were looking for."
+  ) {
+    return `I can't find a definition for ${displayedword}.`;
+  }
+  return `${displayedword}: ${data[0].meanings[0].definitions[0].definition}`;
 }
-  return `${displayedword}: ${data[0].meanings[0].definitions[0].definition}`
-}
 
-async function createEndGameContent () {
-              const defcont = document.createElement("div");
-            console.log(word)
-            const text = await lookUpWordInDictionary(word)
-            console.log(text)
+async function createEndGameContent() {
+  const defcont = document.createElement("div");
+  console.log(word);
+  const text = await lookUpWordInDictionary(word);
+  console.log(text);
 
-            defcont.textContent = text;
+  defcont.textContent = text;
 
-            // const worddisplay = document.createElement("div")
-            // worddisplay.textContent = word
-            const hr = document.createElement('hr')
-            const restartBtn = document.createElement("button")
-            restartBtn.style.display = "block"
-            restartBtn.textContent = "Restart"
-            restartBtn.addEventListener("click", restartGame)
+  const hr = document.createElement("hr");
+  const restartBtn = document.createElement("button");
+  restartBtn.style.display = "block";
+  restartBtn.textContent = "Restart";
+  restartBtn.addEventListener("click", restartGame);
 
-            const br = document.createElement("br")
+  const br = document.createElement("br");
 
-            gallows.before(hr)
-            // gallows.before (worddisplay)
-            gallows.before(defcont);
-            defcont.after (br)
-            defcont.append(restartBtn)
+  gallows.before(hr);
+  gallows.before(defcont);
+  defcont.after(br);
+  defcont.append(restartBtn);
+
+  restartBtn.focus()
 }
