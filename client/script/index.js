@@ -99,6 +99,7 @@ const wordList = {
     "oh my god person",
     "preston",
     "the angry videogame nerd",
+    "isabel and caleb"
   ],
   videogames: [
     "wobbly life",
