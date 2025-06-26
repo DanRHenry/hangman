@@ -26,6 +26,16 @@ const wordList = {
     "pig",
     "lamb",
     "donkey",
+    "dinosaur",
+    "pterodactyl",
+    "woolly mammoth",
+    "sabre tooth tiger",
+    "elephant",
+    "pelican",
+    "goat",
+    "wolf",
+    "great wolf",
+    "tiger"
   ],
   people: [
     "korra",
@@ -65,6 +75,10 @@ const wordList = {
     "police car",
     "car",
     "matchbox",
+    "delorean",
+    "kitt",
+    "accopaopa",
+    "flying car"
   ],
   cartoons: [
     "bluey",
@@ -126,7 +140,7 @@ const wordList = {
     "kungfu panda",
     "",
   ],
-  tvshows: ["dexter"],
+  // tvshows: ["dexter"],
   books: [
     "i want my book back",
     "murder the truth",
@@ -151,7 +165,8 @@ const wordList = {
     "penelope rex and the problem with pets",
     "where the wild things are",
     "the cat way",
-    "",
+    "no david",
+    "that is not a good idea"
   ],
   scrabbledictionary: dictionary,
   // games: [""]
